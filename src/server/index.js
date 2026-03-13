@@ -43,7 +43,12 @@ function getGameState() {
 }
 
 function setupSocketIO(httpServer) {
-  io = new Server(httpServer);
+  io = new Server(httpServer, {
+    cors: {
+      origin: '*',
+      methods: ['GET', 'POST']
+    }
+  });
 
   io.on('connection', (socket) => {
 
