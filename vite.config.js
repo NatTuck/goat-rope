@@ -85,6 +85,7 @@ function setupSocketIO(httpServer) {
     });
 
     socket.on('input', ({ dir, pressed }) => {
+      console.log('Input received:', socket.id, dir, pressed);
       if (players[socket.id]) {
         players[socket.id].inputs[dir] = pressed;
       }
@@ -103,6 +104,10 @@ function setupSocketIO(httpServer) {
         io.emit('gameState', getGameState());
       }
       console.log('Client disconnected:', socket.id);
+    });
+
+    socket.on('log', (msg) => {
+      console.log(`[Client ${socket.id}]`, ...msg);
     });
   });
 

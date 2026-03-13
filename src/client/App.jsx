@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import { io } from 'socket.io-client';
 import * as ex from 'excalibur';
 
 export default function App() {
@@ -23,105 +24,98 @@ export default function App() {
 
 function Game() {
   const canvasRef = useRef(null);
-  const engineRef = useRef(null);
   const actorsRef = useRef({});
   const ropesRef = useRef([]);
   const [playerCount, setPlayerCount] = useState(0);
+  const logRef = useRef(() => {});
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    const socket = io();
+    window.gameSocket = socket;
 
-    const engine = new ex.Engine({
-      canvas,
-      width: 800,
-      height: 600,
-      backgroundColor: new ex.Color(34, 68, 34)
-    });
+    logRef.current = (...args) => {
+      socket.emit('log', args.map(a => String(a)));
+    };
 
-    engineRef.current = engine;
+    logRef.current('Socket connecting...');
 
-    const scene = new ex.Scene(engine);
-    engine.addScene('game', scene);
-    engine.goToScene('game');
+    socket.on('connect', () => {
+      logRef.current('Socket connected, initializing game...');
 
-    const script = document.createElement('script');
-    script.src = '/socket.io/socket.io.js';
-    script.onload = () => {
-      const socket = io();
-      window.gameSocket = socket;
+      const canvas = canvasRef.current;
+      if (!canvas) {
+        logRef.current('ERROR: No canvas');
+        return;
+      }
+
+      const engine = new ex.Engine({
+        canvasElement: canvas,
+        width: 800,
+        height: 600,
+        backgroundColor: new ex.Color(34, 68, 34)
+      });
+
+      engine.start();
 
       socket.on('gameState', (state) => {
-        setPlayerCount(state.players.length);
+        try {
+          setPlayerCount(state.players.length);
 
-        const currentIds = new Set(state.players.map(p => p.id));
-        const actors = actorsRef.current;
+          const currentIds = new Set(state.players.map(p => p.id));
+          const actors = actorsRef.current;
 
-        Object.keys(actors).forEach(id => {
-          if (!currentIds.has(id)) {
-            actors[id].kill();
-            delete actors[id];
-          }
-        });
+          Object.keys(actors).forEach(id => {
+            if (!currentIds.has(id)) {
+              actors[id].kill();
+              delete actors[id];
+            }
+          });
 
-        state.players.forEach(player => {
-          let actor = actors[player.id];
-          if (!actor) {
-            actor = new ex.Actor({
-              x: player.x,
-              y: player.y,
-              width: 60,
-              height: 60
-            });
-            actor.graphics.use(new ex.Circle({ 
-              radius: 30, 
-              color: ex.Color.fromHex(player.color.replace('#', ''))
-            }));
-            scene.add(actor);
-            actors[player.id] = actor;
-          }
+          state.players.forEach(player => {
+            let actor = actors[player.id];
+            if (!actor) {
+              actor = new ex.Actor({
+                x: player.x,
+                y: player.y,
+                width: 60,
+                height: 60,
+                color: ex.Color.fromHex(player.color.replace('#', ''))
+              });
+              engine.add(actor);
+              actors[player.id] = actor;
+            }
+            actor.x = player.x;
+            actor.y = player.y;
+          });
 
-          actor.x = player.x;
-          actor.y = player.y;
-        });
+          ropesRef.current.forEach(rope => rope.kill());
+          ropesRef.current = [];
 
-        ropesRef.current.forEach(rope => rope.kill());
-        ropesRef.current = [];
-
-        state.ropes.forEach(rope => {
-          const from = state.players.find(p => p.id === rope.from);
-          const to = state.players.find(p => p.id === rope.to);
-          if (from && to) {
-            const line = new ex.Actor({
-              x: 400,
-              y: 300,
-              width: 800,
-              height: 600
-            });
-            
-            line.graphics.use(
-              new ex.Line({
-                start: new ex.Vector(from.x - 400, from.y - 300),
-                end: new ex.Vector(to.x - 400, to.y - 300),
-                color: ex.Color.fromHex('8b4513'),
-                thickness: 4
-              })
-            );
-            scene.add(line);
-            ropesRef.current.push(line);
-          }
-        });
+          state.ropes.forEach(rope => {
+              const from = state.players.find(p => p.id === rope.from);
+            const to = state.players.find(p => p.id === rope.to);
+            if (from && to) {
+              const line = new ex.Actor({ x: 400, y: 300, width: 800, height: 600 });
+              line.graphics.use(
+                new ex.Line({
+                  start: new ex.Vector(from.x - 400, from.y - 300),
+                  end: new ex.Vector(to.x - 400, to.y - 300),
+                  color: ex.Color.fromHex('8b4513'),
+                  thickness: 4
+                })
+              );
+              engine.add(line);
+              ropesRef.current.push(line);
+            }
+          });
+        } catch (e) {
+          logRef.current('ERROR', e.message);
+        }
       });
-    };
-    document.body.appendChild(script);
-
-    engine.start();
+    });
 
     return () => {
-      engine.stop();
-      if (window.gameSocket) {
-        window.gameSocket.disconnect();
-      }
+      socket.disconnect();
     };
   }, []);
 
@@ -163,52 +157,37 @@ function Controller() {
   const [goat, setGoat] = useState(null);
   const [connected, setConnected] = useState(false);
   const [inputs, setInputs] = useState({ up: false, down: false, left: false, right: false, rope: false });
+  const logRef = useRef(() => {});
 
   useEffect(() => {
-    if (window.io) {
-      initController();
-      return;
-    }
-    const script = document.createElement('script');
-    script.src = '/socket.io/socket.io.js';
-    script.onload = initController;
-    script.onerror = () => {
-      console.error('Failed to load socket.io.js');
-    };
-    document.body.appendChild(script);
-
-    return () => {
-      if (window.socket) {
-        window.socket.disconnect();
-      }
-    };
-  }, []);
-
-  function initController() {
-    console.log('Initializing controller socket...');
     const socket = io();
     window.socket = socket;
 
+    logRef.current = (...args) => {
+      socket.emit('log', args.map(a => String(a)));
+    };
+
+    logRef.current('Controller connecting...');
+
     socket.on('connect', () => {
-      console.log('Socket connected!');
       setConnected(true);
       socket.emit('join');
+      logRef.current('Controller connected, joined');
     });
 
     socket.on('assigned', (data) => {
-      console.log('Assigned goat:', data);
       setGoat(data);
+      logRef.current('Assigned goat:', data.name);
     });
 
     socket.on('disconnect', () => {
-      console.log('Socket disconnected');
       setConnected(false);
     });
 
-    socket.on('connect_error', (err) => {
-      console.error('Socket connection error:', err);
-    });
-  }
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   function handleInput(dir, pressed) {
     setInputs(prev => ({ ...prev, [dir]: pressed }));

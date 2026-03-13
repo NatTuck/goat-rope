@@ -21,17 +21,18 @@ for dependencies under ./node_modules/
 Rules:
 
 - As the project changes, keep .gitignore up to date.
-- All deps must be installed via NPM. No runtime external resources like CDNs.
+- All deps must be installed via NPM and imports. No runtime external resources
+like CDNs, no extra script tags.
 - Do not write stuff to /tmp. If you need temp files, create and use a ./tmp
-  directory.
+directory.
 - Do not run the server. If the user wants to run or restart the server, then
-  they can do that.
+they can do that.
 - For individual bugs, follow TDD:
   - Write a test that fails because of the bug.
   - Run the test to confirm it fails.
   - Fix.
   - Run the test to confirm it passes.
 - Every test *must* test the behavior of specific code. No tests should operate
-  on the text of the source code nor should tests just test for the existence of
-  some code.
+on the text of the source code nor should tests just test for the existence of
+some code.
 - DO NOT KILL OPENCODE.
