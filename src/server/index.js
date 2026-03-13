@@ -46,7 +46,6 @@ function setupSocketIO(httpServer) {
   io = new Server(httpServer);
 
   io.on('connection', (socket) => {
-    console.log('Client connected:', socket.id);
 
     socket.on('join', () => {
       const usedColors = Object.values(players).map(p => p.color);
@@ -95,7 +94,6 @@ function setupSocketIO(httpServer) {
         });
         io.emit('gameState', getGameState());
       }
-      console.log('Client disconnected:', socket.id);
     });
   });
 

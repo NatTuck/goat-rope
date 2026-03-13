@@ -37,14 +37,10 @@ function Game() {
       socket.emit('log', args.map(a => String(a)));
     };
 
-    logRef.current('Socket connecting...');
-
     socket.on('connect', () => {
-      logRef.current('Socket connected, initializing game...');
 
       const canvas = canvasRef.current;
       if (!canvas) {
-        logRef.current('ERROR: No canvas');
         return;
       }
 
@@ -59,10 +55,11 @@ function Game() {
 
       socket.on('gameState', (state) => {
         try {
+          const actors = actorsRef.current;
+          
           setPlayerCount(state.players.length);
 
           const currentIds = new Set(state.players.map(p => p.id));
-          const actors = actorsRef.current;
 
           Object.keys(actors).forEach(id => {
             if (!currentIds.has(id)) {
@@ -81,11 +78,11 @@ function Game() {
                 height: 60,
                 color: ex.Color.fromHex(player.color.replace('#', ''))
               });
-              engine.add(actor);
+              engine.currentScene.add(actor);
               actors[player.id] = actor;
             }
-            actor.x = player.x;
-            actor.y = player.y;
+            actor.pos.x = player.x;
+            actor.pos.y = player.y;
           });
 
           ropesRef.current.forEach(rope => rope.kill());
@@ -157,27 +154,18 @@ function Controller() {
   const [goat, setGoat] = useState(null);
   const [connected, setConnected] = useState(false);
   const [inputs, setInputs] = useState({ up: false, down: false, left: false, right: false, rope: false });
-  const logRef = useRef(() => {});
 
   useEffect(() => {
     const socket = io();
     window.socket = socket;
 
-    logRef.current = (...args) => {
-      socket.emit('log', args.map(a => String(a)));
-    };
-
-    logRef.current('Controller connecting...');
-
     socket.on('connect', () => {
       setConnected(true);
       socket.emit('join');
-      logRef.current('Controller connected, joined');
     });
 
     socket.on('assigned', (data) => {
       setGoat(data);
-      logRef.current('Assigned goat:', data.name);
     });
 
     socket.on('disconnect', () => {
