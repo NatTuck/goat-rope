@@ -22,16 +22,29 @@ function Display() {
         backgroundColor: new ex.Color(34, 68, 34)
       });
 
-      const goatImage = new ex.ImageSource('/images/goat-sprites.png');
+      const goatImage = new ex.ImageSource('/images/goat-sprites.png', {
+        filtering: ex.ImageFiltering.Pixel
+      });
       await goatImage.load();
 
       const firstBox = spriteData[0].box;
-      const goatSprite = goatImage.createSprite(
-        firstBox[0],
-        firstBox[1],
-        firstBox[2] - firstBox[0],
-        firstBox[3] - firstBox[1]
-      );
+      const spriteWidth = firstBox[2] - firstBox[0];
+      const spriteHeight = firstBox[3] - firstBox[1];
+      const targetWidth = 140;
+      const targetHeight = Math.round(spriteHeight * (targetWidth / spriteWidth));
+
+      const goatSprite = goatImage.toSprite({
+        sourceView: {
+          x: firstBox[0],
+          y: firstBox[1],
+          width: spriteWidth,
+          height: spriteHeight
+        },
+        destSize: {
+          width: targetWidth,
+          height: targetHeight
+        }
+      });
 
       engine.start();
 
@@ -57,9 +70,7 @@ function Display() {
           if (!actor) {
             actor = new ex.Actor({
               x: player.x,
-              y: player.y,
-              width: 60,
-              height: 60
+              y: player.y
             });
             actor.graphics.use(goatSprite);
             engine.currentScene.add(actor);

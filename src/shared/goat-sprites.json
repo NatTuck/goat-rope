@@ -1,92 +1,182 @@
 [
   {
-    "box": [66, 44, 343, 151],
+    "box": [
+      0,
+      0,
+      234,
+      245
+    ],
     "slug": "standing_idle",
     "description": "Standing normally with all four legs on the ground."
   },
   {
-    "box": [66, 206, 343, 313],
+    "box": [
+      234,
+      0,
+      468,
+      245
+    ],
     "slug": "walking_step_1",
     "description": "Mid-step with the front left leg slightly raised."
   },
   {
-    "box": [66, 362, 343, 471],
-    "slug": "standing_idle_2",
-    "description": "A neutral standing pose."
-  },
-  {
-    "box": [61, 523, 329, 624],
-    "slug": "jumping_ascending",
-    "description": "Rearing up on its hind legs, pushing off the ground for a jump."
-  },
-  {
-    "box": [75, 689, 343, 796],
-    "slug": "jumping_descending",
-    "description": "Coming down from a jump, front hooves reaching for the ground."
-  },
-  {
-    "box": [75, 848, 343, 955],
-    "slug": "standing_idle_3",
-    "description": "Another neutral standing pose."
-  },
-  {
-    "box": [404, 42, 648, 151],
+    "box": [
+      468,
+      0,
+      702,
+      245
+    ],
     "slug": "walking_step_2",
     "description": "Another mid-step frame in the walk cycle."
   },
   {
-    "box": [404, 202, 648, 309],
+    "box": [
+      702,
+      0,
+      936,
+      245
+    ],
     "slug": "walking_step_3",
     "description": "Legs spread further apart, continuing the walk cycle."
   },
   {
-    "box": [404, 360, 648, 471],
-    "slug": "standing_idle_4",
-    "description": "Neutral standing pose."
+    "box": [
+      936,
+      0,
+      1170,
+      245
+    ],
+    "slug": "standing_idle_2",
+    "description": "A neutral standing pose."
   },
   {
-    "box": [455, 511, 648, 649],
-    "slug": "grazing",
-    "description": "Head pointed down towards the ground, likely an eating or grazing animation."
+    "box": [
+      1170,
+      0,
+      1404,
+      245
+    ],
+    "slug": "standing_idle_3",
+    "description": "Another neutral standing pose."
   },
   {
-    "box": [394, 686, 643, 797],
-    "slug": "charging_alert",
-    "description": "Head slightly lowered, legs in a staggered stance, possibly a headbutt attack or an alert pose."
-  },
-  {
-    "box": [455, 840, 648, 960],
-    "slug": "crouching",
-    "description": "Body lowered to the ground, resting on its knees and belly."
-  },
-  {
-    "box": [714, 48, 944, 162],
-    "slug": "standing_idle_5",
-    "description": "Neutral standing pose."
-  },
-  {
-    "box": [714, 206, 944, 311],
+    "box": [
+      0,
+      245,
+      234,
+      490
+    ],
     "slug": "walking_step_4",
     "description": "Another walking frame."
   },
   {
-    "box": [728, 364, 944, 464],
-    "slug": "standing_idle_6",
+    "box": [
+      234,
+      245,
+      468,
+      490
+    ],
+    "slug": "standing_idle_4",
     "description": "Neutral standing pose."
   },
   {
-    "box": [798, 521, 944, 638],
+    "box": [
+      468,
+      245,
+      702,
+      490
+    ],
+    "slug": "standing_idle_5",
+    "description": "Neutral standing pose."
+  },
+  {
+    "box": [
+      702,
+      245,
+      936,
+      490
+    ],
+    "slug": "grazing",
+    "description": "Head pointed down towards the ground, likely an eating or grazing animation."
+  },
+  {
+    "box": [
+      936,
+      245,
+      1170,
+      490
+    ],
     "slug": "knocked_out",
     "description": "Lying flat on its back with legs stiffly in the air."
   },
   {
-    "box": [704, 687, 958, 815],
+    "box": [
+      1170,
+      245,
+      1404,
+      490
+    ],
+    "slug": "charging_alert",
+    "description": "Head slightly lowered, legs in a staggered stance, possibly a headbutt attack or an alert pose."
+  },
+  {
+    "box": [
+      0,
+      490,
+      234,
+      735
+    ],
+    "slug": "standing_idle_6",
+    "description": "Neutral standing pose."
+  },
+  {
+    "box": [
+      234,
+      490,
+      468,
+      735
+    ],
+    "slug": "standing_idle_7",
+    "description": "Neutral standing pose."
+  },
+  {
+    "box": [
+      468,
+      490,
+      702,
+      735
+    ],
+    "slug": "standing_idle_8",
+    "description": "Neutral standing pose."
+  },
+  {
+    "box": [
+      702,
+      490,
+      936,
+      735
+    ],
     "slug": "tumbling",
     "description": "Tumbling backwards through the air, indicating it has been hit or knocked back."
   },
   {
-    "box": [728, 831, 944, 964],
+    "box": [
+      936,
+      490,
+      1170,
+      735
+    ],
     "slug": "sliding_prone",
     "description": "Lying flat on its belly with legs splayed out, possibly sliding on the ground or a defeated pose."
+  },
+  {
+    "box": [
+      1170,
+      490,
+      1404,
+      735
+    ],
+    "slug": "crouching",
+    "description": "Body lowered to the ground, resting on its knees and belly."
   }
 ]

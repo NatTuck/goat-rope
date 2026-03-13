@@ -4,7 +4,7 @@ export const NOUNS = ['Storm', 'Taco', 'Ninja', 'Captain', 'Pudge', 'Rocket', 'M
 
 export const GAME_WIDTH = 800;
 export const GAME_HEIGHT = 600;
-export const GOAT_SIZE = 60;
+export const GOAT_SIZE = 140;
 export const ROPE_RANGE = 150;
 export const ROPE_PULL_FORCE = 3;
 export const MOVE_SPEED = 4;

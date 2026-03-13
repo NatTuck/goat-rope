@@ -13,7 +13,7 @@ const NOUNS = ['Storm', 'Taco', 'Ninja', 'Captain', 'Pudge', 'Rocket', 'Muffin',
 
 const GAME_WIDTH = 800;
 const GAME_HEIGHT = 600;
-const GOAT_SIZE = 60;
+const GOAT_SIZE = 140;
 const ROPE_RANGE = 150;
 const ROPE_PULL_FORCE = 3;
 const MOVE_SPEED = 4;
