@@ -5,20 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Goat Rope</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: system-ui, sans-serif;
+      background: #1a3d15;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    #game {
+      border: 4px solid #4a7c3f;
+      border-radius: 8px;
       background: #2d5a27;
-      overflow: hidden;
+    }
+    #status {
+      margin-top: 20px;
+      color: #8fbc5f;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    #instructions {
+      margin-top: 10px;
+      color: #6a9c4f;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
   <div id="app"></div>
-  <script type="module" src="/src/client/main.jsx"></script>
+  <script type="module" src="/src/client/display.jsx"></script>
 </body>
 </html>
