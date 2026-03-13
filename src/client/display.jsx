@@ -2,6 +2,7 @@ import { createRoot } from 'react-dom/client';
 import { useEffect, useState, useRef } from 'react';
 import { io } from 'socket.io-client';
 import * as ex from 'excalibur';
+import spriteData from '../shared/goat-sprites.json';
 
 function Display() {
   const canvasRef = useRef(null);
@@ -13,18 +14,30 @@ function Display() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const engine = new ex.Engine({
-      canvasElement: canvas,
-      width: 800,
-      height: 600,
-      backgroundColor: new ex.Color(34, 68, 34)
-    });
+    async function init() {
+      const engine = new ex.Engine({
+        canvasElement: canvas,
+        width: 800,
+        height: 600,
+        backgroundColor: new ex.Color(34, 68, 34)
+      });
 
-    engine.start();
+      const goatImage = new ex.ImageSource('/images/goat-sprites.png');
+      await goatImage.load();
 
-    const socket = io();
+      const firstBox = spriteData[0].box;
+      const goatSprite = goatImage.createSprite(
+        firstBox[0],
+        firstBox[1],
+        firstBox[2] - firstBox[0],
+        firstBox[3] - firstBox[1]
+      );
 
-    socket.on('gameState', (state) => {
+      engine.start();
+
+      const socket = io();
+
+      socket.on('gameState', (state) => {
       try {
         const actors = actorsRef.current;
         
@@ -46,9 +59,9 @@ function Display() {
               x: player.x,
               y: player.y,
               width: 60,
-              height: 60,
-              color: ex.Color.fromHex(player.color.replace('#', ''))
+              height: 60
             });
+            actor.graphics.use(goatSprite);
             engine.currentScene.add(actor);
             actors[player.id] = actor;
           }
@@ -79,11 +92,14 @@ function Display() {
       } catch (e) {
         console.error('ERROR', e.message);
       }
-    });
+      });
 
-    return () => {
-      socket.disconnect();
-    };
+      return () => {
+        socket.disconnect();
+      };
+    }
+
+    init();
   }, []);
 
   return (
